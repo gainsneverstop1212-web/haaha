@@ -60,6 +60,10 @@
   .acts button,.btn{background:transparent;border:1px solid rgba(194,168,130,.5);color:var(--gold);font:600 12.5px Inter,"Noto Sans TC";padding:9px 10px;border-radius:9px;cursor:pointer;transition:.2s}
   .acts button:hover,.btn:hover{background:var(--gold);color:var(--navy)}
   .hint{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .measure{display:flex;flex-direction:column;gap:2px;font-size:12px}
+  .mrow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,.18)}
+  .mrow b{font-weight:600;font-size:12.5px} .mrow span{color:var(--gold);font-variant-numeric:tabular-nums;text-align:right} .mrow small{grid-column:1/-1;color:var(--muted);font-size:11px}
+  .mhead{font-size:11px;color:var(--muted);margin:8px 2px 2px;letter-spacing:.1em}
   .status{display:flex;flex-direction:column;gap:6px}
   .row{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;padding:9px 11px;background:rgba(0,0,0,.2);border-radius:9px;line-height:1.45}
   .row i{font-style:normal;font-weight:700;flex:0 0 auto} .row.ok i{color:var(--ok)} .row.bad i{color:var(--bad)} .row.warn i{color:var(--warn)}
@@ -133,6 +137,7 @@
     </div>
     <div class="toggle on" id="cut"><span>自動剖切近鏡牆身</span><div class="sw"></div></div>
     <div class="toggle" id="grid"><span>地面格線（每格 50 cm）</span><div class="sw"></div></div>
+    <div class="toggle on" id="zones"><span>顯示預留位（冷氣 / 窗簾 / 開門）</span><div class="sw"></div></div>
   </div>
 
   <div>
@@ -143,6 +148,11 @@
   <div>
     <div class="sec-title">吊櫃 · 影音</div>
     <div class="list" id="fixlist"></div>
+  </div>
+
+  <div>
+    <div class="sec-title">尺寸清單（cm）</div>
+    <div class="measure" id="measure"></div>
   </div>
 
   <div id="selwrap" style="display:none">
@@ -161,9 +171,9 @@
       <div><b>① 東牆留空裝白幕。</b>72 吋（159 × 89 cm）牆頂拉落式白幕。坐喺床上睇，距離大約 2.1 m，剛好係舒服嘅觀看距離。唔用嘅時候收埋，唔阻地方。</div>
       <div><b>② 投影機裝喺西牆兩扇窗之間嘅層架。</b>剛好避開窗同冷氣，影到東牆大約 2.3 m。買機嘅時候揀投射比（throw ratio）約 1.4–1.5，或者有光學變焦嘅型號。</div>
       <div><b>③ 單門衣櫃移去入口左邊（南牆）。</b>60 × 60 × 240 cm，唔擋入口、唔遮窗，中間騰出約 1.7 × 1.25 m 淨空位。</div>
-      <div><b>④ 四組吊櫃向上借位。</b>書枱右上、窗頂、床頭同門頂；全部離地 1.5 m 以上，唔阻投影光線同坐位。</div>
+      <div><b>④ 三組吊櫃向上借位。</b>書枱右上、床頭同門頂，全部離地 1.5 m 以上。原本窗頂吊櫃會擋住冷氣出風同窗簾路軌，所以取消咗。</div>
       <div><b>⑤ 書枱成幅北牆。</b>衣櫃唔再擋住，坐位段闊到約 1.7 m。</div>
-      <div style="color:var(--warn)">⚠ 窗頂吊櫃要避開冷氣機，所以由離西牆 20 cm 開始；冷氣機前面記得留位散熱。</div>
+      <div><b>⑥ 預留窗簾位。</b>兩個窗都用天花路軌、及窗台長度（離地 95 cm 起）嘅窗簾，唔會掂到床頭板同書枱。投影機移到西窗窗簾同冷氣出風位中間。</div>
     </div>
   </div>
 
@@ -354,11 +364,11 @@ function buildDesk(g,{w,d}){
   const xs=[-w/2+2,w/2-6]; if(w>=230)xs.push(-w/2+88);
   xs.forEach(x=>{bx(g,x,-d/2+2,0,4,4,72,blk);bx(g,x,d/2-6,0,4,4,72,blk);});
   bx(g,-w/2+4,d/2-5,62,w-8,2,10,blk);
-  bx(g,mx-10,d/2-24,75,20,14,1.2,blk); bx(g,mx-1.5,d/2-15,76,3,3,14,blk); bx(g,mx-32,d/2-16,88,64,2,36,M('#18191b',{roughness:.3}));
+  bx(g,mx-10,d/2-32,75,20,14,1.2,blk); bx(g,mx-1.5,d/2-23,76,3,3,14,blk); bx(g,mx-32,d/2-24,88,64,2,36,M('#18191b',{roughness:.3}));
   bx(g,mx-22,-d/2+9,75,44,14,1.6,M('#d9d9d6')); bx(g,mx+28,-d/2+12,75,7,11,2,M('#d9d9d6'));
-  const lx=-w/2+42; cy(g,lx,d/2-14,75,6,6,1.5,M(P.brass,{metalness:.7,roughness:.35}));
-  bx(g,lx-.8,d/2-15,76,1.6,1.6,38,M(P.brass,{metalness:.7,roughness:.35}));
-  const sh=cy(g,lx,d/2-24,104,4,8,9,M(P.shade,{emissive:C('#ffd49a'),emissiveIntensity:.4}),24);
+  const lx=-w/2+42; cy(g,lx,d/2-22,75,6,6,1.5,M(P.brass,{metalness:.7,roughness:.35}));
+  bx(g,lx-.8,d/2-23,76,1.6,1.6,38,M(P.brass,{metalness:.7,roughness:.35}));
+  const sh=cy(g,lx,d/2-31,104,4,8,9,M(P.shade,{emissive:C('#ffd49a'),emissiveIntensity:.4}),24);
   cy(g,-w/2+14,d/2-14,75,6,5,12,M('#e9e5dd'));
   const leaf=new THREE.Mesh(new THREE.IcosahedronGeometry(10,1),M(P.leaf,{roughness:.9,flatShading:true}));leaf.position.set(-w/2+14,96,-(d/2-14));leaf.castShadow=true;g.add(leaf);
   [['#1e2a3a',4],['#b49d82',3],['#7a8a8e',3.5]].forEach(([c,t],i)=>bx(g,-w/2+62,d/2-28,75+i*4,24,18,t,M(c)));
@@ -419,6 +429,17 @@ function build(it){
 ITEMS.forEach(build);
 
 /* ================= Fixtures: cabinets, projector, screen ================= */
+function curtainStrip(g,axis,a0,a1,z0,z1,mat){
+  for(let a=a0,i=0;a<a1-0.1;a+=6,i++){const w=Math.min(6,a1-a), off=i%2?2.5:0;
+    if(axis==='y')addBox(g,6+off,a,z0,1.5,w,z1-z0,mat,false); else addBox(g,a,228+off,z0,w,1.5,z1-z0,mat,false);}
+}
+function buildCurtains(g,closed){
+  const fab=M('#e9e3d7',{roughness:1}), trk=M('#2a2a2c',{roughness:.4});
+  addBox(g,7,0,246,2,135,2,trk); addBox(g,25,230,246,155,2,2,trk);
+  if(closed){curtainStrip(g,'y',1,134,95,246,fab);curtainStrip(g,'x',26,179,95,246,fab);}
+  else{curtainStrip(g,'y',1,20,95,246,fab);curtainStrip(g,'y',110,134,95,246,fab);
+       curtainStrip(g,'x',26,50,95,246,fab);curtainStrip(g,'x',155,179,95,246,fab);}
+}
 function cab(g,x,y,z,w,d,h,face){
   addBox(g,x,y,z,w,d,h,M(P.white,{roughness:.6}));
   const n=Math.max(1,Math.round(w/45)), pw=w/n, dm=M(P.oak,{roughness:.55}), br=M(P.brass,{metalness:.7,roughness:.35});
@@ -441,27 +462,40 @@ const FIX=[
     const fab=new THREE.Mesh(new THREE.PlaneGeometry(166,120),M('#f7f7f5',{roughness:.9,side:THREE.DoubleSide}));
     fab.rotation.y=-Math.PI/2;fab.position.set(257.5,178,-120);fab.receiveShadow=true;g.add(fab);
     addBox(g,255,37,114,4,166,4,M('#2a2a2c'));}},
-  {id:'proj',zh:'投影機 + 層架',en:'Projector · west wall',color:'#2a2a2c',on:true,build:g=>{
-    addBox(g,0,116,186,32,54,3,M(P.oak,{roughness:.5}));
-    addBox(g,0,120,170,2,4,16,M(P.black));addBox(g,0,162,170,2,4,16,M(P.black));
-    addBox(g,3,128,189,27,30,10,M('#3a3b3e',{roughness:.4}));
-    const l=addCyl(g,31,143,194,3.2,3.2,3,M('#111',{roughness:.2}),20);l.rotation.z=Math.PI/2;
-    addCyl(g,32.6,143,194,2,2,.4,M('#9fc4ff',{emissive:C('#bcd8ff'),emissiveIntensity:.8}),20).rotation.z=Math.PI/2;}},
-  {id:'cabN',zh:'書枱吊櫃',en:'Wall Cabinet · 100×35×95',color:'#e8e4dc',on:true,wall:'north',build:g=>cab(g,160,205,150,100,35,95,'S')},
-  {id:'cabTop',zh:'窗頂吊櫃',en:'Top Cabinet · 140×35×33',color:'#e8e4dc',on:true,wall:'north',build:g=>cab(g,20,205,212,140,35,33,'S')},
-  {id:'cabS',zh:'床頭吊櫃',en:'Over-bed Cabinet · 120×30×80',color:'#e8e4dc',on:true,wall:'south',build:g=>cab(g,0,0,165,120,30,80,'N')},
-  {id:'cabDoor',zh:'門頂吊櫃',en:'Over-door Cabinet · 80×70×36',color:'#e8e4dc',on:true,wall:'south',build:g=>cab(g,180,-70,212,80,70,36,'N')},
+  {id:'proj',zh:'投影機 + 層架',en:'Projector · 西牆 · 層架 32×30 · 離地 186',color:'#2a2a2c',on:true,build:g=>{
+    addBox(g,0,136,186,32,30,3,M(P.oak,{roughness:.5}));
+    addBox(g,0,139,170,2,4,16,M(P.black));addBox(g,0,159,170,2,4,16,M(P.black));
+    addBox(g,3,137,189,27,28,10,M('#3a3b3e',{roughness:.4}));
+    const l=addCyl(g,31,151,194,3.2,3.2,3,M('#111',{roughness:.2}),20);l.rotation.z=Math.PI/2;
+    addCyl(g,32.6,151,194,2,2,.4,M('#9fc4ff',{emissive:C('#bcd8ff'),emissiveIntensity:.8}),20).rotation.z=Math.PI/2;}},
+  {id:'cabN',zh:'書枱吊櫃',en:'78×35×95 · 離地 150',color:'#e8e4dc',on:true,wall:'north',build:g=>cab(g,182,205,150,78,35,95,'S')},
+  {id:'cabS',zh:'床頭吊櫃',en:'102×30×80 · 離地 165',color:'#e8e4dc',on:true,wall:'south',build:g=>cab(g,18,0,165,102,30,80,'N')},
+  {id:'cabDoor',zh:'門頂吊櫃',en:'80×70×36 · 離地 212',color:'#e8e4dc',on:true,wall:'south',build:g=>cab(g,180,-70,212,80,70,36,'N')},
+  {id:'curtain',zh:'窗簾（天花路軌）',en:'及窗台長度 · 打開狀態',color:'#e9e3d7',on:true,build:g=>buildCurtains(g,false)},
+  {id:'curClose',zh:'預覽：拉埋窗簾',en:'睇吓夜晚拉埋嘅樣',color:'#cfc6b4',on:false,build:g=>{}},
 ];
 FIX.forEach(f=>{f.g=new THREE.Group();f.build(f.g);scene.add(f.g);});
 const fx=id=>FIX.find(f=>f.id===id);
-const beam=(()=>{const L=[32,194,-143],c=[[257,126,-41],[257,126,-199],[257,215,-199],[257,215,-41]];
+const beam=(()=>{const L=[32,194,-151],c=[[257,126,-41],[257,126,-199],[257,215,-199],[257,215,-41]];
   const pos=[];for(let i=0;i<4;i++){pos.push(...L,...c[i],...c[(i+1)%4]);}
   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
   const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:C('#fff6e0'),transparent:true,opacity:.07,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
   scene.add(m);return m;})();
 const img=new THREE.Mesh(new THREE.PlaneGeometry(158,89),new THREE.MeshBasicMaterial({map:movieTex(),toneMapped:false}));
 img.rotation.y=-Math.PI/2;img.position.set(257.2,170.5,-120);scene.add(img);
-function placeFix(){FIX.forEach(f=>f.g.visible=f.on&&(!f.wall||groups[f.wall].visible));const show=fx('screen').on&&fx('proj').on;beam.visible=show;img.visible=show;}
+const ZONES=(()=>{const g=new THREE.Group();scene.add(g);
+  const vol=(x,y,z,w,d,h,c,o)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshBasicMaterial({color:C(c),transparent:true,opacity:o,depthWrite:false}));m.position.set(x+w/2,z+h/2,-(y+d/2));g.add(m);
+    const e=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),new THREE.LineBasicMaterial({color:C(c),transparent:true,opacity:.6}));e.position.copy(m.position);g.add(e);};
+  vol(0,170,175,100,70,75,'#7fb2e5',.12);
+  vol(0,0,95,15,135,155,'#d9b98a',.1); vol(25,225,95,155,15,155,'#d9b98a',.1);
+  const sw=new THREE.Mesh(new THREE.CircleGeometry(58,32,Math.PI/2,Math.PI/2),new THREE.MeshBasicMaterial({color:C('#d9b98a'),transparent:true,opacity:.22,depthWrite:false,side:THREE.DoubleSide}));
+  sw.rotation.x=-Math.PI/2; sw.position.set(178,.4,-60); g.add(sw);
+  return g;})();
+let curState=false;
+function placeFix(){
+  if(fx('curClose').on!==curState){curState=fx('curClose').on;const g=fx('curtain').g;g.clear();buildCurtains(g,curState);}
+  FIX.forEach(f=>f.g.visible=f.on&&(!f.wall||groups[f.wall].visible));
+  fx('curClose').g.visible=false; if(fx('curtain').g)fx('curtain').g.visible=fx('curtain').on||fx('curClose').on;const show=fx('screen').on&&fx('proj').on;beam.visible=show;img.visible=show;}
 placeFix();
 const DEF_FIX=FIX.map(f=>f.on);
 
@@ -498,10 +532,15 @@ function check(){
     if(scr&&pj&&it.h>=120&&ov(f,{x0:60,x1:255,y0:72,y1:190})){issues.push(['warn',`${it.zh} 擋住投影光線`]);badIds.add(it.id);}
     if(scr&&it.h>=110&&f.x1>W-3&&f.y0<200&&f.y1>40){issues.push(['warn',`${it.zh} 遮住白幕`]);badIds.add(it.id);}
   });
+  on.forEach(it=>{const f=fp(it);
+    if(it.h>=150&&ov(f,{x0:0,x1:100,y0:170,y1:240})){issues.push(['warn',`${it.zh} 擋住冷氣出風位`]);badIds.add(it.id);}
+    if(it.h>95&&(ov(f,{x0:0,x1:15,y0:0,y1:135})||ov(f,{x0:25,x1:180,y0:225,y1:240}))){issues.push(['warn',`${it.zh} 擋住窗簾位`]);badIds.add(it.id);}
+    if(it.id!=='wardrobe'&&ov(f,{x0:120,x1:180,y0:60,y1:118})&&byId('wardrobe').on&&byId('wardrobe').x===150&&byId('wardrobe').y===30){issues.push(['warn',`${it.zh} 擋住衣櫃開門位`]);badIds.add(it.id);}
+  });
   const bed=byId('bed');
   if(bed.on&&bed.r===0){const f=fp(bed); if(f.x0<3&&f.y1>AC.u0+10)issues.push(['warn','床頭近冷氣機，冷風會吹頭']);}
   entryZone.material.opacity=entry?.28:0;
-  if(!issues.length)issues.push(['ok','冇重疊、入口暢通、窗同冷氣冇被遮，投影光線亦冇被擋']);
+  if(!issues.length)issues.push(['ok','冇重疊；入口、衣櫃開門位、冷氣出風位同窗簾位全部留空；投影光線冇被擋']);
 }
 function gaps(it){
   const f=fp(it), g={w:f.x0,e:W-f.x1,s:f.y0,n:D-f.y1};
@@ -560,6 +599,15 @@ function renderSel(){
   selEl.querySelector('#rem').onclick=()=>toggle(it);
   selEl.querySelector('#cls').onclick=()=>select(null);
 }
+const RESV=[['冷氣出風位','100 × 70，離地 175–250','西牆冷氣前方 1 m 唔擺高身嘢'],['西窗窗簾位','15 × 135，離地 95–250','窗兩邊各留 20–25 cm 收窗簾'],['北窗窗簾位','155 × 15，離地 95–250','書枱後面 15 cm 唔擺高過 95 cm 嘅嘢'],['衣櫃開門位','半徑 58','衣櫃前面唔擺嘢'],['入口通道','80 × 55','入門轉身位']];
+const FIXPOS={screen:'東牆，離南牆 40–200，畫面離地 126–215',proj:'離南牆 136–166，離地 186',cabN:'北牆，離西牆 182–260',cabS:'南牆，離西牆 18–120',cabDoor:'入口通道頂',curtain:'路軌離牆 8 cm，西窗 0–135、北窗 25–180'};
+function renderMeasure(){const el=document.getElementById('measure');let h='<div class="mhead">傢俬（地面）</div>';
+  ITEMS.filter(i=>i.on).forEach(it=>{const f=fp(it),s=sz(it);h+=`<div class="mrow"><b>${it.zh}</b><span>${s.w} × ${s.d} × ${it.h}</span><small>離西牆 ${Math.round(f.x0)}–${Math.round(f.x1)}　離南牆 ${Math.round(f.y0)}–${Math.round(f.y1)}</small></div>`;});
+  h+='<div class="mhead">吊櫃 · 影音 · 窗簾</div>';
+  FIX.filter(f=>f.on&&FIXPOS[f.id]).forEach(f=>{h+=`<div class="mrow"><b>${f.zh}</b><span>${f.en.split(' · ')[0]}</span><small>${FIXPOS[f.id]}</small></div>`;});
+  h+='<div class="mhead">預留空位</div>';
+  RESV.forEach(([a,b,c])=>{h+=`<div class="mrow"><b>${a}</b><span>${b}</span><small>${c}</small></div>`;});
+  el.innerHTML=h;}
 function renderStatus(){statusEl.innerHTML=issues.map(([t,m])=>`<div class="row ${t}"><i>${t==='ok'?'✓':t==='bad'?'✕':'!'}</i><span>${m}</span></div>`).join('');}
 const aside=document.getElementById('aside'), handle=document.getElementById('handle'), mbar=document.getElementById('mbar');
 const mobile=()=>window.matchMedia('(max-width:820px)').matches;
@@ -576,7 +624,7 @@ document.getElementById('mrot').onclick=()=>selected&&rotate(selected);
 document.getElementById('mrem').onclick=()=>selected&&toggle(selected);
 document.getElementById('mcls').onclick=()=>select(null);
 document.getElementById('msize').onclick=()=>{if(!selected)return;resize(selected,(selected.si+1)%selected.sizes.length);};
-function refresh(){check();refreshTint();updOutline();renderList();renderFix();renderSel();renderStatus();renderMbar();}
+function refresh(){check();refreshTint();updOutline();renderList();renderFix();renderSel();renderStatus();renderMbar();renderMeasure();}
 
 function toggle(it){it.on=!it.on; if(it.on){clamp(it);} place(it); if(!it.on&&selected===it)selected=null; refresh();}
 function rotate(it){const f=fp(it); it.r=(it.r+90)%360; clamp(it); place(it); refresh();}
@@ -664,6 +712,7 @@ window.addEventListener('keydown',e=>{if(!selected||e.target.tagName==='INPUT')r
 let cutaway=true; const cutBtn=document.getElementById('cut'), gridBtn=document.getElementById('grid');
 cutBtn.onclick=()=>{cutaway=!cutaway;cutBtn.classList.toggle('on',cutaway);};
 gridBtn.onclick=()=>{grid.visible=!grid.visible;gridBtn.classList.toggle('on',grid.visible);};
+const zonesBtn=document.getElementById('zones');zonesBtn.onclick=()=>{ZONES.visible=!ZONES.visible;zonesBtn.classList.toggle('on',ZONES.visible);};
 document.getElementById('reset').onclick=()=>{ITEMS.forEach((it,i)=>{const d=DEFAULTS[i];const re=it.si!==d.si;Object.assign(it,d);if(re)build(it);place(it);});FIX.forEach((f,i)=>f.on=DEF_FIX[i]);placeFix();selected=null;refresh();setView('iso');};
 document.getElementById('shot').onclick=()=>{outline.visible=false;renderer.render(scene,camera);const a=document.createElement('a');a.download='bedroom-cinema.png';a.href=canvas.toDataURL('image/png');a.click();updOutline();};
 function updateCut(){const p=camera.position, inPass=p.x>180&&p.x<260&&p.z>0&&p.z<77&&p.y<H;
