@@ -300,8 +300,8 @@ addBox(groups.east,W-.8,115,26,.8,8.6,8.6,M('#f6f4ef'),false);
 addBox(groups.east,W-.8,125,26,.8,8.6,8.6,M('#f6f4ef'),false);
 // Door leaf (open against east wall of passage)
 const doorMat=M(P.door,{roughness:.45});
-addBox(scene,251,-76,0,4,72,204,doorMat);
-addCyl(scene,248.5,-12,98,2.2,2.2,3,M(P.black,{metalness:.6,roughness:.3}),16).rotation.z=Math.PI/2;
+addBox(groups.south,251,-76,0,4,72,204,doorMat);
+addCyl(groups.south,248.5,-12,98,2.2,2.2,3,M(P.black,{metalness:.6,roughness:.3}),16).rotation.z=Math.PI/2;
 // Ceiling
 const ceil=new THREE.Group(); scene.add(ceil);
 const cm=M('#f7f5f0',{roughness:1,side:THREE.DoubleSide});
@@ -447,10 +447,10 @@ const FIX=[
     addBox(g,3,128,189,27,30,10,M('#3a3b3e',{roughness:.4}));
     const l=addCyl(g,31,143,194,3.2,3.2,3,M('#111',{roughness:.2}),20);l.rotation.z=Math.PI/2;
     addCyl(g,32.6,143,194,2,2,.4,M('#9fc4ff',{emissive:C('#bcd8ff'),emissiveIntensity:.8}),20).rotation.z=Math.PI/2;}},
-  {id:'cabN',zh:'書枱吊櫃',en:'Wall Cabinet · 100×35×95',color:'#e8e4dc',on:true,build:g=>cab(g,160,205,150,100,35,95,'S')},
-  {id:'cabTop',zh:'窗頂吊櫃',en:'Top Cabinet · 140×35×33',color:'#e8e4dc',on:true,build:g=>cab(g,20,205,212,140,35,33,'S')},
-  {id:'cabS',zh:'床頭吊櫃',en:'Over-bed Cabinet · 120×30×80',color:'#e8e4dc',on:true,build:g=>cab(g,0,0,165,120,30,80,'N')},
-  {id:'cabDoor',zh:'門頂吊櫃',en:'Over-door Cabinet · 80×70×36',color:'#e8e4dc',on:true,build:g=>cab(g,180,-70,212,80,70,36,'N')},
+  {id:'cabN',zh:'書枱吊櫃',en:'Wall Cabinet · 100×35×95',color:'#e8e4dc',on:true,wall:'north',build:g=>cab(g,160,205,150,100,35,95,'S')},
+  {id:'cabTop',zh:'窗頂吊櫃',en:'Top Cabinet · 140×35×33',color:'#e8e4dc',on:true,wall:'north',build:g=>cab(g,20,205,212,140,35,33,'S')},
+  {id:'cabS',zh:'床頭吊櫃',en:'Over-bed Cabinet · 120×30×80',color:'#e8e4dc',on:true,wall:'south',build:g=>cab(g,0,0,165,120,30,80,'N')},
+  {id:'cabDoor',zh:'門頂吊櫃',en:'Over-door Cabinet · 80×70×36',color:'#e8e4dc',on:true,wall:'south',build:g=>cab(g,180,-70,212,80,70,36,'N')},
 ];
 FIX.forEach(f=>{f.g=new THREE.Group();f.build(f.g);scene.add(f.g);});
 const fx=id=>FIX.find(f=>f.id===id);
@@ -461,7 +461,7 @@ const beam=(()=>{const L=[32,194,-143],c=[[257,126,-41],[257,126,-199],[257,215,
   scene.add(m);return m;})();
 const img=new THREE.Mesh(new THREE.PlaneGeometry(158,89),new THREE.MeshBasicMaterial({map:movieTex(),toneMapped:false}));
 img.rotation.y=-Math.PI/2;img.position.set(257.2,170.5,-120);scene.add(img);
-function placeFix(){FIX.forEach(f=>f.g.visible=f.on);const show=fx('screen').on&&fx('proj').on;beam.visible=show;img.visible=show;}
+function placeFix(){FIX.forEach(f=>f.g.visible=f.on&&(!f.wall||groups[f.wall].visible));const show=fx('screen').on&&fx('proj').on;beam.visible=show;img.visible=show;}
 placeFix();
 const DEF_FIX=FIX.map(f=>f.on);
 
@@ -669,7 +669,7 @@ document.getElementById('shot').onclick=()=>{outline.visible=false;renderer.rend
 function updateCut(){const p=camera.position, inPass=p.x>180&&p.x<260&&p.z>0&&p.z<77&&p.y<H;
   groups.south.visible=!(cutaway&&p.z>0&&!inPass); groups.north.visible=!(cutaway&&p.z<-D);
   groups.west.visible=!(cutaway&&p.x<0); groups.east.visible=!(cutaway&&p.x>W);
-  ceil.visible=p.y<H&&p.x>0&&p.x<W&&p.z<77&&p.z>-D;}
+  ceil.visible=p.y<H&&p.x>0&&p.x<W&&p.z<77&&p.z>-D; placeFix();}
 
 /* ================= Loop ================= */
 function resizeR(){const w=main.clientWidth,h=main.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
